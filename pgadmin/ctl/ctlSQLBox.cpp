@@ -643,6 +643,16 @@ void ctlSQLBox::UpdateLineNumber()
 	}
 }
 
+void ctlSQLBox::UpdateLineNumber(wxStyledTextEvent &event)
+{
+	CallAfter(&ctlSQLBox::DoUpdateLineNumber,event);
+}
+
+void ctlSQLBox::DoUpdateLineNumber(const wxStyledTextEvent &event)
+{
+	UpdateLineNumber();
+}
+
 void ctlSQLBox::OnEndProcess(wxProcessEvent &ev)
 {
 	if (process)
@@ -766,7 +776,7 @@ void ctlSQLBox::OnPositionStc(wxStyledTextEvent &event)
 #ifdef __WXMAC__
 	Freeze();
 #endif
-	UpdateLineNumber();
+	UpdateLineNumber(event);
 #ifdef __WXMAC__
 	Thaw();
 #endif

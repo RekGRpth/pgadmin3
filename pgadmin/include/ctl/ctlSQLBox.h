@@ -69,6 +69,8 @@ public:
 	}
 	bool BlockComment(bool uncomment = false);
 	void UpdateLineNumber();
+	void UpdateLineNumber(wxStyledTextEvent &event);
+	void DoUpdateLineNumber(const wxStyledTextEvent &event);
 	wxString ExternalFormat();
 	void AbortProcess();
 
