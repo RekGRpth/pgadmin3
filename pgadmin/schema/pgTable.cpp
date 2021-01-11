@@ -511,10 +511,12 @@ wxString pgTable::GetSql(ctlTree *browser)
 				sql += wxT("BLOCKSIZE=") + GetBlocksize() + wxT(", ");
 			if (GetChecksum().Length() > 0)
 				sql += wxT("CHECKSUM=") + GetChecksum() + wxT(", ");
+			if (GetConnection()->BackendMinimumVersion(12, 0)); else {
 			if (GetHasOids())
 				sql +=  wxT("\n  OIDS=TRUE");
 			else
 				sql +=  wxT("\n  OIDS=FALSE");
+			}
 			if(GetConnection()->BackendMinimumVersion(8, 4))
 			{
 				if (GetCustomAutoVacuumEnabled())
@@ -1029,6 +1031,7 @@ void pgTable::ShowTreeDetail(ctlTree *browser, frmMain *form, ctlListView *prope
 			properties->AppendItem(_("Inherited tables"), GetInheritedTables());
 		if (GetConnection()->BackendMinimumVersion(9, 1))
 			properties->AppendYesNoItem(_("Unlogged?"), GetUnlogged());
+		if (GetConnection()->BackendMinimumVersion(12, 0)); else
 		properties->AppendYesNoItem(_("Has OIDs?"), GetHasOids());
 		properties->AppendYesNoItem(_("System table?"), GetSystemObject());
 
@@ -1432,12 +1435,22 @@ pgObject *pgTableFactory::CreateObjects(pgCollection *collection, ctlTree *brows
 	pgSet *tables;
 	if (collection->GetConnection()->BackendMinimumVersion(8, 0))
 	{
+		if (collection->GetConnection()->BackendMinimumVersion(12, 0)) {
+		query = wxT("SELECT rel.oid, rel.relname, rel.reltablespace AS spcoid, spc.spcname, pg_get_userbyid(rel.relowner) AS relowner, rel.relacl, ")
+		        wxT("rel.relhassubclass, rel.reltuples, des.description, con.conname, con.conkey,\n")
+		        wxT("       EXISTS(select 1 FROM pg_trigger\n")
+		        wxT("                       JOIN pg_proc pt ON pt.oid=tgfoid AND pt.proname='logtrigger'\n")
+		        wxT("                       JOIN pg_proc pc ON pc.pronamespace=pt.pronamespace AND pc.proname='slonyversion'\n")
+		        wxT("                     WHERE tgrelid=rel.oid) AS isrepl,\n");
+		} else {
 		query = wxT("SELECT rel.oid, rel.relname, rel.reltablespace AS spcoid, spc.spcname, pg_get_userbyid(rel.relowner) AS relowner, rel.relacl, rel.relhasoids, ")
 		        wxT("rel.relhassubclass, rel.reltuples, des.description, con.conname, con.conkey,\n")
 		        wxT("       EXISTS(select 1 FROM pg_trigger\n")
 		        wxT("                       JOIN pg_proc pt ON pt.oid=tgfoid AND pt.proname='logtrigger'\n")
 		        wxT("                       JOIN pg_proc pc ON pc.pronamespace=pt.pronamespace AND pc.proname='slonyversion'\n")
 		        wxT("                     WHERE tgrelid=rel.oid) AS isrepl,\n");
+		}
+
 
 		if (collection->GetConnection()->BackendMinimumVersion(9, 0))
 		{
@@ -1578,6 +1591,7 @@ pgObject *pgTableFactory::CreateObjects(pgCollection *collection, ctlTree *brows
 				table->iSetUnlogged(tables->GetVal(wxT("relpersistence")) == wxT("u"));
 			else
 				table->iSetUnlogged(false);
+			if (collection->GetConnection()->BackendMinimumVersion(12, 0)); else
 			table->iSetHasOids(tables->GetBool(wxT("relhasoids")));
 			table->iSetEstimatedRows(tables->GetDouble(wxT("reltuples")) * gp_segments);
 			if (collection->GetConnection()->BackendMinimumVersion(8, 2))
