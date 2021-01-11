@@ -2394,15 +2394,15 @@ sqlTable::sqlTable(pgConn *conn, pgQueryThread *_thread, const wxString &tabName
 					editor = new sqlGridBoolEditor();
 					break;
 				case PGOID_TYPE_INT8:
-				case PGOID_TYPE_SERIAL8:
+				case (Oid)PGOID_TYPE_SERIAL8:
 					SetNumberEditor(i, 20);
 					break;
 				case PGOID_TYPE_INT2:
-				case PGOID_TYPE_SERIAL2:
+				case (Oid)PGOID_TYPE_SERIAL2:
 					SetNumberEditor(i, 5);
 					break;
 				case PGOID_TYPE_INT4:
-				case PGOID_TYPE_SERIAL:
+				case (Oid)PGOID_TYPE_SERIAL:
 					SetNumberEditor(i, 10);
 					break;
 				case PGOID_TYPE_OID:
