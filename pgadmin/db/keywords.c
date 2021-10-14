@@ -28,8 +28,13 @@
 /*
  * List of (keyword-name, keyword-token-value) pairs.
  */
+#if (PG_VERSION_NUM >= 140000)
+#define PG_KEYWORD(a,b,c,d) {a,c},
+#else
 #define PG_KEYWORD(a,b,c) {a,c},
+#endif
 const ScanKeyword ScanKeywords[] = {
+
 #include <parser/kwlist.h>
 };
 const int NumScanKeywords = lengthof(ScanKeywords);
