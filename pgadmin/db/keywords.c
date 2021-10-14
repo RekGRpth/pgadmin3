@@ -24,6 +24,7 @@
 
 #include "postgres.h"
 #include "parser/keywords.h"
+#include <pg_config.h>
 
 /*
  * List of (keyword-name, keyword-token-value) pairs.
