@@ -79,7 +79,7 @@ ctlSQLBox::ctlSQLBox(wxWindow *parent, wxWindowID id, const wxPoint &pos, const 
 
 void ctlSQLBox::Create(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style)
 {
-	wxStyledTextCtrl::Create(parent, id , pos, size, style);
+	wxStyledTextCtrl::Create(parent, id, pos, size, style);
 
 	// Clear all styles
 	StyleClearAll();
@@ -769,7 +769,6 @@ void ctlSQLBox::OnPositionStc(wxStyledTextEvent &event)
 	wxChar nextch = GetCharAt(pos);
 	int st = GetStyleAt(pos - 1);
 	int match;
-
 
 	// Line numbers
 	// Ensure we don't recurse through any paint handlers on Mac

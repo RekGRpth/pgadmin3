@@ -2140,7 +2140,7 @@ void sqlGridBoolEditor::BeginEdit(int row, int col, wxGrid *grid)
 				grid->GetTable()->SetValue(row, col, wxEmptyString);\
 				break;\
 }\
- 
+
 #if wxCHECK_VERSION(2, 9, 0)
 // pure virtual in 2.9+, doesn't exist in prior versions
 void sqlGridBoolEditor::ApplyEdit(int row, int col, wxGrid *grid)

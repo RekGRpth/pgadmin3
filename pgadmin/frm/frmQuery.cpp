@@ -647,7 +647,6 @@ frmQuery::frmQuery(frmMain *form, const wxString &_title, pgConn *_conn, const w
 	queryMenu->Enable(MNU_CLEARHISTORY, false);
 	setTools(false);
 	lastFileFormat = settings->GetUnicodeFile();
-
 	// Note that under GTK+, SetMaxLength() function may only be used with single line text controls.
 	// (see http://docs.wxwidgets.org/2.8/wx_wxtextctrl.html#wxtextctrlsetmaxlength)
 #ifndef __WXGTK__
@@ -930,7 +929,6 @@ void frmQuery::Go()
 	cbConnection->SetSelection(0L);
 	wxCommandEvent ev;
 	OnChangeConnection(ev);
-
 	Show(true);
 	sqlQuery->SetFocus();
 	loading = false;
@@ -2686,7 +2684,7 @@ bool frmQuery::isBeginNotRequired(wxString query)
 	if ((wordlen == 4 && keyword.CmpNoCase(wxT("drop")) == 0) ||
 	        (wordlen == 7 && keyword.CmpNoCase(wxT("reindex")) == 0))
 	{
-		query = query.SubString(wordlen , queryLen - 1);
+		query = query.SubString(wordlen, queryLen - 1);
 		query = query.Trim(false);
 		queryLen = query.Len();
 		wordlen = 0;

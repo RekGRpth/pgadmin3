@@ -649,7 +649,7 @@ void pgServer::StorePassword()
 		if (!passwd.IsEmpty())
 		{
 			passwd.Replace(wxT("\\"), wxT("\\\\"));
-			passwd.Replace(wxT(":") , wxT("\\:"));
+			passwd.Replace(wxT(":"), wxT("\\:"));
 		}
 
 		file.Read(before);

@@ -60,7 +60,7 @@ static const LIBSSH2_PUBLICKEY_CODE_LIST publickey_response_codes[] =
     {LIBSSH2_PUBLICKEY_RESPONSE_STATUS, "status", sizeof("status") - 1},
     {LIBSSH2_PUBLICKEY_RESPONSE_VERSION, "version", sizeof("version") - 1},
     {LIBSSH2_PUBLICKEY_RESPONSE_PUBLICKEY, "publickey",
-     sizeof("publickey") - 1} ,
+     sizeof("publickey") - 1},
     {0, NULL, 0}
 };
 
@@ -78,13 +78,13 @@ static const LIBSSH2_PUBLICKEY_CODE_LIST publickey_response_codes[] =
 #define LIBSSH2_PUBLICKEY_STATUS_CODE_MAX       8
 
 static const LIBSSH2_PUBLICKEY_CODE_LIST publickey_status_codes[] = {
-    {LIBSSH2_PUBLICKEY_SUCCESS, "success", sizeof("success") - 1} ,
+    {LIBSSH2_PUBLICKEY_SUCCESS, "success", sizeof("success") - 1},
     {LIBSSH2_PUBLICKEY_ACCESS_DENIED, "access denied",
      sizeof("access denied") - 1},
     {LIBSSH2_PUBLICKEY_STORAGE_EXCEEDED, "storage exceeded",
-     sizeof("storage exceeded") - 1} ,
+     sizeof("storage exceeded") - 1},
     {LIBSSH2_PUBLICKEY_VERSION_NOT_SUPPORTED, "version not supported",
-     sizeof("version not supported") - 1} ,
+     sizeof("version not supported") - 1},
     {LIBSSH2_PUBLICKEY_KEY_NOT_FOUND, "key not found",
      sizeof("key not found") - 1},
     {LIBSSH2_PUBLICKEY_KEY_NOT_SUPPORTED, "key not supported",
