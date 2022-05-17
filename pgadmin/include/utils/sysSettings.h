@@ -686,7 +686,7 @@ public:
 	bool GetSuppressGuruHints() const
 	{
 		bool b;
-		Read(wxT("SuppressGuruHints"), &b, false);
+		Read(wxT("SuppressGuruHints"), &b, true);
 		return b;
 	}
 	void SetSuppressGuruHints(const bool newval)
