@@ -115,7 +115,8 @@ bool pgSequence::DropObject(wxFrame *frame, ctlTree *browser, bool cascaded)
 
 void pgSequence::UpdateValues()
 {
-	pgSet *sequence = ExecuteSet(
+	/*ABDUL:BEGIN*/
+	/*pgSet *sequence = ExecuteSet(
 		wxT("SELECT last_value, min_value, max_value, cache_value, is_cycled, increment_by, is_called\n")
 		wxT("  FROM ") + GetQuotedFullIdentifier());
 	if (sequence)
@@ -133,7 +134,43 @@ void pgSequence::UpdateValues()
 			nextValue = lastValue;
 
 		delete sequence;
+	}*/
+	pgSet *sequence = NULL;
+	if (GetConnection()->BackendMinimumVersion(10, 0))
+	{
+		sequence = ExecuteSet(
+		               wxString::Format(
+		                   wxT("SELECT s.last_value, s.min_value, s.max_value, s.cache_size AS cache_value, s.\"cycle\" AS is_cycled, s.increment_by, c.is_called")
+		                   wxT(" FROM pg_sequences s CROSS JOIN %s c")
+		                   wxT(" WHERE QUOTE_IDENT(s.schemaname) || '.' || QUOTE_IDENT(s.sequencename) = '%s'")
+		                   , GetQuotedFullIdentifier().c_str()
+		                   , GetQuotedFullIdentifier().c_str()
+		               )
+		           );
 	}
+	else
+	{
+		sequence = ExecuteSet(
+		               wxT("SELECT last_value, min_value, max_value, cache_value, is_cycled, increment_by, is_called\n")
+		               wxT("  FROM ") + GetQuotedFullIdentifier());
+	}
+	if (sequence)
+	{
+		lastValue = sequence->GetLongLong(wxT("last_value"));
+		minValue = sequence->GetLongLong(wxT("min_value"));
+		maxValue = sequence->GetLongLong(wxT("max_value"));
+		cacheValue = sequence->GetLongLong(wxT("cache_value"));
+		increment = sequence->GetLongLong(wxT("increment_by"));
+		cycled = sequence->GetBool(wxT("is_cycled"));
+		called = sequence->GetBool(wxT("is_called"));
+		if (called)
+			nextValue = lastValue + increment;
+		else
+			nextValue = lastValue;
+
+		delete sequence;
+	}
+	/*ABDUL:END*/
 }
 
 
