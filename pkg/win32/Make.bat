@@ -1,4 +1,4 @@
-@echo off
+@echo on
 
 REM
 REM Setup the following values as required for the installation
@@ -9,9 +9,7 @@ SET APPNAME=pgAdmin III
 SET APPKEYWORDS=PostgreSQL, pgAdmin
 SET APPCOMMENTS=PostgreSQL Tools
 SET APPDESCRIPTION=Management and administration tools for the PostgreSQL DBMS
-IF NOT (%WIXDIR%)==() GOTO DONE_WIXDIR
-SET WIXDIR="C:\Program Files (x86)\Windows Installer XML v3\bin"
-:DONE_WIXDIR
+IF "%WIX%"=="" GOTO ERR_NOWIX
 
 SET BUILDTREE="../.."
 
@@ -24,11 +22,7 @@ REM
 
 if NOT "%1"=="" GOTO REGEN_GUIDS
 
-echo Invalid command line options.
-echo Usage: "Make.bat <Major.Minor version number>"
-echo        "Make.bat REGENGUIDS"
-echo.
-GOTO EXIT
+GOTO ERR_USAGE
 
 
 
@@ -55,13 +49,15 @@ GOTO EXIT
 
 :BUILD_PACKAGE
 
+if (%3)==() GOTO ERR_USAGE
+
 echo.
 echo Building %APPNAME% Installer...
 
-%WIXDIR%\candle -nologo -dWXDIR="%WXWIN%" -dPGDIR="%PGDIR%" -dPGBUILD="%PGBUILD%" -dBUILDTREE="%BUILDTREE%" -dBRANDED=%BRANDED% -dBRANDINGDIR="%BRANDINGDIR%" -dAPPVENDOR="%APPVENDOR%" -dAPPNAME="%APPNAME%" -dAPPKEYWORDS="%APPKEYWORDS%" -dAPPCOMMENTS="%APPCOMMENTS%" -dAPPDESCRIPTION="%APPDESCRIPTION%" -dAPPVERSION="%1" -dSYSTEM32DIR="%SystemRoot%\System32" -dPFILESDIR="%ProgramFiles%" src/pgadmin3.wxs
+"%WIX%\bin\candle" -nologo -dLIBSSH2DIR="%LIBSSH2DIR%" -dWXDIR="%WXWIN%" -dPLATFORM_TOOLSET_VERSION=%2 -dVC_TOOLS_REDIST_INSTALL_DIR=%3 -dPGDIR="%PGDIR%" -dBUILDTREE="%BUILDTREE%" -dBRANDED=%BRANDED% -dBRANDINGDIR="%BRANDINGDIR%" -dAPPVENDOR="%APPVENDOR%" -dAPPNAME="%APPNAME%" -dAPPKEYWORDS="%APPKEYWORDS%" -dAPPCOMMENTS="%APPCOMMENTS%" -dAPPDESCRIPTION="%APPDESCRIPTION%" -dAPPVERSION="%1" -dSYSTEM32DIR="%SystemRoot%\System32" -dPFILESDIR="%ProgramFiles%" src/pgadmin3.wxs
 IF ERRORLEVEL 1 GOTO ERR_HANDLER
 
-%WIXDIR%\light -sice:ICE03 -sice:ICE25 -sice:ICE82 -sw1101 -nologo -ext WixUIExtension -cultures:en-us pgadmin3.wixobj
+"%WIX%\bin\light" -sice:ICE03 -sice:ICE25 -sice:ICE82 -sw1101 -nologo -ext WixUIExtension -cultures:en-us pgadmin3.wixobj
 IF ERRORLEVEL 1 GOTO ERR_HANDLER
 
 echo.
@@ -71,6 +67,18 @@ GOTO EXIT
 :ERR_HANDLER
 echo.
 echo Aborting build!
+GOTO EXIT
+
+:ERR_USAGE
+echo Invalid command line options.
+echo Usage: "Make.bat <Major.Minor version number> <Platform toolset version> <VCToolsRedistInstallDir>"
+echo        "Make.bat REGENGUIDS"
+echo.
+GOTO EXIT
+
+:ERR_NOWIX
+echo WiX directory not configured!
+echo Please make sure the environment variable WIX points to the correct location.
 GOTO EXIT
 
 

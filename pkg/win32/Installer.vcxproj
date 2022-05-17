@@ -14,7 +14,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -26,12 +26,12 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='All|Win32'">$(SolutionDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='All|Win32'">$(SolutionDir)</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='All|Win32'">$(ProjectDir)$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='All|Win32'">
     <CustomBuildStep>
       <Message>Calling installer build script...</Message>
-      <Command>make.bat 1.23</Command>
+      <Command>make.bat 1.23 $(PlatformToolsetVersion) "$(VCToolsRedistInstallDir)."</Command>
       <Outputs>.\pgadmin3.msi;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Link>
