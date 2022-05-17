@@ -1033,7 +1033,7 @@ void frmQuery::OnChangeConnection(wxCommandEvent &ev)
 		if (rc == wxID_OK)
 		{
 			bool createdNewConn;
-			wxString applicationname = appearanceFactory->GetLongAppName() + _(" - Query Tool");
+			wxString applicationname = appearanceFactory->GetLongAppName() + " - Query Tool";
 			pgConn *newconn = dlg.CreateConn(applicationname, createdNewConn);
 			if (newconn && createdNewConn)
 			{
@@ -3879,7 +3879,7 @@ bool frmQuery::SqlBookClose(bool canVeto)
 wxWindow *queryToolBaseFactory::StartDialogSql(frmMain *form, pgObject *obj, const wxString &sql)
 {
 	pgDatabase *db = obj->GetDatabase();
-	wxString applicationname = appearanceFactory->GetLongAppName() + _(" - Query Tool");
+	wxString applicationname = appearanceFactory->GetLongAppName() + " - Query Tool";
 	pgConn *conn = db->CreateConn(applicationname);
 	if (conn)
 	{

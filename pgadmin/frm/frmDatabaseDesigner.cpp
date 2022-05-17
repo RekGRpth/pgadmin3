@@ -821,7 +821,7 @@ void frmDatabaseDesigner::OnChangeConnection(wxCommandEvent &event)
 		if (rc == wxID_OK)
 		{
 			bool createdNewConn;
-			wxString applicationname = appearanceFactory->GetLongAppName() + _(" - Database Designer");
+			wxString applicationname = appearanceFactory->GetLongAppName() + " - Database Designer";
 			pgConn *newconn = dlg.CreateConn(applicationname, createdNewConn);
 			if (newconn && createdNewConn)
 			{
@@ -892,7 +892,7 @@ wxWindow *databaseDesignerBaseFactory::StartDialogDesigner(frmMain *form, pgObje
 	if(obj)
 	{
 		pgDatabase *db = obj->GetDatabase();
-		wxString applicationname = appearanceFactory->GetLongAppName() + _(" - Database designer");
+		wxString applicationname = appearanceFactory->GetLongAppName() + " - Database designer";
 		pgConn *conn = NULL;
 		if(db)
 		{
