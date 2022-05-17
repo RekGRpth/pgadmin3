@@ -19,12 +19,13 @@ You will need:
 - wxGTK 2.8.x from http://www.wxwidgets.org/
 - libxml2 2.6.18 or above from http://www.xmlsoft.org/
 - libxslt 1.1.x or above from http://www.xmlsoft.org/
+- libssh2 1.10.0 or above from http://www.libssh2.org/
 - PostgreSQL 8.4 or above from http://www.postgresql.org/
 - Sphinx 1.0 or above from http://sphinx.pocoo.org/
 
 Building:
 
-1) Install libxml2 and libxslt if they are not already present on your system, 
+1) Install libssh2, libxml2 and libxslt if they are not already present on your system, 
    per the instructions included with them.
    
 2) Install PostgreSQL per the instructions included. It is recommended that you
@@ -75,12 +76,13 @@ You will need:
 - wxMac 2.8.x from http://www.wxwidgets.org/
 - libxml2 2.6.18 or above from http://www.xmlsoft.org/
 - libxslt 1.1.x or above from http://www.xmlsoft.org/
+- libssh2 1.10.0 or above from http://www.libssh2.org/
 - PostgreSQL 8.4 or above from http://www.postgresql.org/
 - Sphinx 1.0 or above from http://sphinx.pocoo.org/
 
 Building:
 
-1) Install libxml2 and libxslt per the instructions included with them into a 
+1) Install libssh2, libxml2 and libxslt per the instructions included with them into a 
    non-system location. The default versions included with OS X Panther and 
    Tiger are too old and will not work correctly with pgAdmin.
    
