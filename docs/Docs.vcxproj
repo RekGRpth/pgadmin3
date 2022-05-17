@@ -14,7 +14,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -26,13 +26,13 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='All|Win32'">$(SolutionDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='All|Win32'">$(SolutionDir)</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='All|Win32'">$(ProjectDir)$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='All|Win32'">
     <CustomBuildStep>
       <Message>Calling help build script...</Message>
       <Command>createConf.vbs
-builddocs.bat
+builddocs.bat $(PlatformToolsetVersion)
 </Command>
       <Inputs>%(Inputs)</Inputs>
       <Outputs>.\en_US\pgadmin3.chm;.\en_US\pgadmin3.hhp.cached;%(Outputs)</Outputs>
