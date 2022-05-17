@@ -41,6 +41,7 @@ typedef u_long in_addr_t;
 #include "db/pgConn.h"
 #include "utils/misc.h"
 #include "db/pgSet.h"
+#include <pg_config.h>
 
 double pgConn::libpqVersion = 8.0;
 
@@ -588,7 +589,11 @@ wxString pgConn::EncryptPassword(const wxString &user, const wxString &password)
 	char *chrPassword;
 	wxString strPassword;
 
+#if (PG_VERSION_NUM >= 100000)
+	chrPassword = PQencryptPasswordConn(conn, password.mb_str(*conv), user.mb_str(*conv), NULL);
+#else
 	chrPassword = PQencryptPassword(password.mb_str(*conv), user.mb_str(*conv));
+#endif
 	strPassword = wxString::FromAscii(chrPassword);
 
 	PQfreemem(chrPassword);
