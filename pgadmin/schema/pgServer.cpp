@@ -1366,11 +1366,7 @@ void pgServer::ShowStatistics(frmMain *form, ctlListView *statistics)
 		wxString pidcol = GetConnection()->BackendMinimumVersion(9, 2) ? wxT("pid") : wxT("procpid");
 		wxString querycol = GetConnection()->BackendMinimumVersion(9, 2) ? wxT("query") : wxT("current_query");
 		wxString sql;
-		wxString replication_query;
-		if (conn->BackendMinimumVersion(10, 0))
-			replication_query = wxT("state || ' (' || sent_lsn || ' sent, ' || write_lsn || ' written, ' || flush_lsn || ' flushed, ' || replay_lsn || ' applied)'");
-		else
-			replication_query = wxT("state || ' (' || sent_location || ' sent, ' || write_location || ' written, ' || flush_location || ' flushed, ' || replay_location || ' applied)'");
+		wxString replication_query = wxT("state || ' (' || sent_location || ' sent, ' || write_location || ' written, ' || flush_location || ' flushed, ' || replay_location || ' applied)'");
 		wxLogInfo(wxT("Displaying statistics for server %s"), GetIdentifier().c_str());
 
 		// Add the statistics view columns
@@ -1449,11 +1445,7 @@ bool pgServer::ReloadConfiguration()
 bool pgServer::PauseReplay()
 {
 	SetReplayPaused(true);
-	wxString sql;
-	if (conn->BackendMinimumVersion(10, 0))
-		sql = wxT("SELECT pg_wal_replay_pause()");
-	else
-		sql = wxT("SELECT pg_xlog_replay_pause()");
+	wxString sql = wxT("SELECT pg_xlog_replay_pause()");
 	return conn->ExecuteVoid(sql);
 }
 
@@ -1461,11 +1453,7 @@ bool pgServer::PauseReplay()
 bool pgServer::ResumeReplay()
 {
 	SetReplayPaused(false);
-	wxString sql;
-	if (conn->BackendMinimumVersion(10, 0))
-		sql = wxT("SELECT pg_wal_replay_resume()");
-	else
-		sql = wxT("SELECT pg_xlog_replay_resume()");
+	wxString sql = wxT("SELECT pg_xlog_replay_resume()");
 	return conn->ExecuteVoid(sql);
 }
 
