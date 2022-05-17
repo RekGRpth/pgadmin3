@@ -2324,24 +2324,8 @@ sqlTable::sqlTable(pgConn *conn, pgQueryThread *_thread, const wxString &tabName
 		delete allColsSet;
 	}
 
-	pgSet *colSet;
-	if (connection->BackendMinimumVersion(12, 0)) {
-	colSet = connection->ExecuteSet(
-	                    wxT("SELECT n.nspname AS nspname, relname, format_type(t.oid,NULL) AS typname, format_type(t.oid, att.atttypmod) AS displaytypname, ")
-	                    wxT("nt.nspname AS typnspname, attname, attnum, COALESCE(b.oid, t.oid) AS basetype, atthasdef, pg_get_expr(adbin, adrelid) as adsrc,\n")
-	                    wxT("       CASE WHEN t.typbasetype::oid=0 THEN att.atttypmod else t.typtypmod END AS typmod,\n")
-	                    wxT("       CASE WHEN t.typbasetype::oid=0 THEN att.attlen else t.typlen END AS typlen\n")
-	                    wxT("  FROM pg_attribute att\n")
-	                    wxT("  JOIN pg_type t ON t.oid=att.atttypid\n")
-	                    wxT("  JOIN pg_namespace nt ON nt.oid=t.typnamespace\n")
-	                    wxT("  JOIN pg_class c ON c.oid=attrelid\n")
-	                    wxT("  JOIN pg_namespace n ON n.oid=relnamespace\n")
-	                    wxT("  LEFT OUTER JOIN pg_type b ON b.oid=t.typbasetype\n")
-	                    wxT("  LEFT OUTER JOIN pg_attrdef def ON adrelid=attrelid AND adnum=attnum\n")
-	                    wxT(" WHERE attnum > 0 AND NOT attisdropped AND attrelid=") + NumToStr(relid) + wxT("::oid\n")
-	                    wxT(" ORDER BY attnum"));
-	} else {
-	colSet = connection->ExecuteSet(
+	/*ABDUL:BEGIN*/
+	/*pgSet *colSet = connection->ExecuteSet(
 	                    wxT("SELECT n.nspname AS nspname, relname, format_type(t.oid,NULL) AS typname, format_type(t.oid, att.atttypmod) AS displaytypname, ")
 	                    wxT("nt.nspname AS typnspname, attname, attnum, COALESCE(b.oid, t.oid) AS basetype, atthasdef, adsrc,\n")
 	                    wxT("       CASE WHEN t.typbasetype::oid=0 THEN att.atttypmod else t.typtypmod END AS typmod,\n")
@@ -2354,10 +2338,30 @@ sqlTable::sqlTable(pgConn *conn, pgQueryThread *_thread, const wxString &tabName
 	                    wxT("  LEFT OUTER JOIN pg_type b ON b.oid=t.typbasetype\n")
 	                    wxT("  LEFT OUTER JOIN pg_attrdef def ON adrelid=attrelid AND adnum=attnum\n")
 	                    wxT(" WHERE attnum > 0 AND NOT attisdropped AND attrelid=") + NumToStr(relid) + wxT("::oid\n")
-	                    wxT(" ORDER BY attnum"));
+	                    wxT(" ORDER BY attnum"));*/
+	wxString query = wxT("SELECT n.nspname AS nspname, relname, format_type(t.oid,NULL) AS typname, format_type(t.oid, att.atttypmod) AS displaytypname, ")
+	                 wxT("nt.nspname AS typnspname, attname, attnum, COALESCE(b.oid, t.oid) AS basetype, atthasdef, ");//, adsrc,\n");
+	if( connection->BackendMinimumVersion(12, 0) )
+	{
+		query += wxT("pg_catalog.pg_get_expr(def.adbin, def.adrelid) AS adsrc,\n");
 	}
-
-
+	else
+	{
+		query += wxT("adsrc,\n");
+	}
+	query += wxT("       CASE WHEN t.typbasetype::oid=0 THEN att.atttypmod else t.typtypmod END AS typmod,\n")
+	         wxT("       CASE WHEN t.typbasetype::oid=0 THEN att.attlen else t.typlen END AS typlen\n")
+	         wxT("  FROM pg_attribute att\n")
+	         wxT("  JOIN pg_type t ON t.oid=att.atttypid\n")
+	         wxT("  JOIN pg_namespace nt ON nt.oid=t.typnamespace\n")
+	         wxT("  JOIN pg_class c ON c.oid=attrelid\n")
+	         wxT("  JOIN pg_namespace n ON n.oid=relnamespace\n")
+	         wxT("  LEFT OUTER JOIN pg_type b ON b.oid=t.typbasetype\n")
+	         wxT("  LEFT OUTER JOIN pg_attrdef def ON adrelid=attrelid AND adnum=attnum\n")
+	         wxT(" WHERE attnum > 0 AND NOT attisdropped AND attrelid=") + NumToStr(relid) + wxT("::oid\n")
+	         wxT(" ORDER BY attnum");
+	pgSet *colSet = connection->ExecuteSet(query);
+	/*ABDUL:END*/
 
 	bool canInsert = false;
 	if (colSet)
@@ -2404,7 +2408,11 @@ sqlTable::sqlTable(pgConn *conn, pgQueryThread *_thread, const wxString &tabName
 			columns[i].typlen = colSet->GetLong(wxT("typlen"));
 			columns[i].typmod = colSet->GetLong(wxT("typmod"));
 
-			switch (columns[i].type)
+//ABDUL:7 Sep 2020:BEGIN
+			//switch (columns[i].type)
+			long int coltype = (long int)columns[i].type;
+			switch (coltype)
+//ABDUL:7 Sep 2020:END
 			{
 				case PGOID_TYPE_BOOL:
 					columns[i].numeric = false;
@@ -2412,15 +2420,15 @@ sqlTable::sqlTable(pgConn *conn, pgQueryThread *_thread, const wxString &tabName
 					editor = new sqlGridBoolEditor();
 					break;
 				case PGOID_TYPE_INT8:
-				case (Oid)PGOID_TYPE_SERIAL8:
+				case PGOID_TYPE_SERIAL8:
 					SetNumberEditor(i, 20);
 					break;
 				case PGOID_TYPE_INT2:
-				case (Oid)PGOID_TYPE_SERIAL2:
+				case PGOID_TYPE_SERIAL2:
 					SetNumberEditor(i, 5);
 					break;
 				case PGOID_TYPE_INT4:
-				case (Oid)PGOID_TYPE_SERIAL:
+				case PGOID_TYPE_SERIAL:
 					SetNumberEditor(i, 10);
 					break;
 				case PGOID_TYPE_OID:
